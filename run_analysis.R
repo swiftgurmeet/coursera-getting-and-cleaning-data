@@ -54,14 +54,31 @@ meanstddata <- alldata[,c(meanstdfeatures$V1)]
 names <- names(meanstddata)
 names <- lapply(names, function(x) gsub("^f","frequency",x))
 names <- lapply(names, function(x) gsub("^t","time",x))
-names <- lapply(names, function(x) gsub("Body","-body",x))
-names <- lapply(names, function(x) gsub("Gyro","-gyro",x))
-names <- lapply(names, function(x) gsub("Jerk","-jerk",x))
-names <- lapply(names, function(x) gsub("Mag","-magnitude",x))
-names <- lapply(names, function(x) gsub("Acc","-acceleration",x))
-names <- lapply(names, function(x) gsub("Gravity","-gravity",x))
+names <- lapply(names, function(x) gsub("Body","body",x))
+names <- lapply(names, function(x) gsub("Gyro","gyro",x))
+names <- lapply(names, function(x) gsub("Jerk","jerk",x))
+names <- lapply(names, function(x) gsub("Mag","magnitude",x))
+names <- lapply(names, function(x) gsub("Acc","acceleration",x))
+names <- lapply(names, function(x) gsub("Gravity","gravity",x))
 names <- lapply(names, function(x) gsub("\\(|\\)","",x))
+ names <- lapply(names, function(x) gsub("\\-","",x))
 names(meanstddata) <- names
 
+# Read the table that can conver activity number to a name string
+activitynames <- read.table("activity_labels.txt",header = FALSE)
 
+# For all the rows in the data set
+for (k in 1:nrow(meanstddata)) {
+ # Get the activity number
+ actnum <- meanstddata[k,"activity"]
+ # Convert number to activity name
+ actname <- activitynames[[2]][[actnum]]
+ # Create a new column with activity names instead of numbers
+ meanstddata[k,"activityname"] <- actname
+}
+# Delete the activity column
+meanstddata[,"activity"] <- NULL
 
+tidy.melted <- melt(meanstddata, id = c("subject", "activityname"))
+tidy <- dcast(tidy.melted, subject + activityname ~ variable  , mean)
+write.table(tidy,col.names = TRUE,file = "tidy.txt")
