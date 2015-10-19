@@ -1,5 +1,6 @@
 ## Getting and Cleaning Data Course Project
 
+### Getting the data
 
 This R code may be used to download and unzip the original data:
 
