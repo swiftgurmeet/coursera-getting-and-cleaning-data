@@ -2,7 +2,7 @@
 
 ### The data set is contained in the file tidy.txt.
 
-1. The field `subject` denotes the subject that performed an activity represented by a unique number. There are 30 in all.
+1. The field `subject` denotes the subject that performed an activity represented by a unique number. There are  a total of 30 subjects.
 2. The second field `activity` denotes the activity performed by the subject. There are six types of activites here:
 
 *   WALKING
