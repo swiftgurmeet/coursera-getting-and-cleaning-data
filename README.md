@@ -14,6 +14,8 @@ This R code may be used to download and unzip the original data:
       unzip(filename) 
     }
 
+### Generating the tidy data
+
 The script `run_analysis.R` is then run on this data (original data) to generate a new set of data as required in the course project:
 1. Merge the training and the test sets to create one data set.
 2. Extract only the measurements on the mean and standard deviation for each measurement. 
