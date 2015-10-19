@@ -12,7 +12,16 @@
 *   STANDING
 *   LAYING
 
-3. Rest of the fields are means of the set of data (features) collected from the original dataset for each subject and activity. Only the fields containing `mean` or `std` in the name were retained. The column names correspond to the name of the original measurement feature, simplified by converting to lower case, removing dashes and brackets and changing the prefixes `t` and `f` to `time` and `frequency` respectively. The values for each subject and activity are the means of those measurements as named in the header of that column.  The original dataset and its description are found at:[ UCI HAR Dataset ](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions " UCI HAR Dataset ")
+Rest of the fields are means of the set of data (features) collected from the original dataset for each subject and activity.
+
+## Transformation of the original data
+
+1. The training and test data are merged
+2. The subject and activity labels for each set of observations is included in the combined data set
+3. Only the fields containing `mean` or `std` in the base name were retained. 
+4. The column names correspond to the name of the original measurement feature, simplified by converting to lower case, removing dashes and brackets and changing the prefixes `t` and `f` to `time` and `frequency` respectively. 
+5. The values for each subject and activity are the means of those measurements named in the header of that column.  
+6. The original dataset and its description are found at:[ UCI HAR Dataset ](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions " UCI HAR Dataset ")
 
 * timebodyaccmeanx
 * timebodyaccmeany
