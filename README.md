@@ -32,4 +32,4 @@ The R script file `run_analysis.R` contains comments describing its functionalit
 *  The package `reshape2` is installed and usable
 
 ### The Code Book
-The file CodeBook.md contains the description of the data set in the file `tidy.txt`.
+The file CodeBook.md contains the description of the data set and transformations used in the file `tidy.txt`.
