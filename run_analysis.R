@@ -36,22 +36,23 @@ testdf <- cbind(testdf,testlabel)
 alldata <- rbind(traindf,testdf)
 
 # Read the feature names
-features <- read.table("features.txt",header = FALSE, stringsAsFactors = FALSE)
+allfeatures <- read.table("features.txt",header = FALSE, stringsAsFactors = FALSE)
 # Add "subject" and "activity" to the feature names since we read in that data as well in the last
 # two columns.
-features <- rbind(features,data.frame(V1=(nrow(features)+1):(nrow(features) + 2),V2=c("subject","activity")))
+allfeatures <- rbind(allfeatures,data.frame(V1=(nrow(features)+1):(nrow(features) + 2),V2=c("subject","activity")))
 
 # Name the columns in the data from the features names we collected
-names(alldata) <- c(as.character(features$V2))
+names(alldata) <- c(as.character(allfeatures$V2))
 
 # Get the column indices fo all the features that have "mean" or "std" in their names
-meanstdfeatures <- features[grep("mean.*\\(.*\\)|std.*\\(.*\\)|subject|activity", features$V2,ignore.case = TRUE), ]
+features <- features[grep("mean.*\\(.*\\)|std.*\\(.*\\)|subject|activity", features$V2,ignore.case = TRUE), ]
+
 # Create new data set that only has the "mean" and "std" columns
-meanstddata <- alldata[,c(meanstdfeatures$V1)]
+df <- alldata[,c(features$V1)]
 
 # Make the column names more meaningful by expanding the parts.
 # The initial f is replaced by frequence, t by time and so on
-names <- names(meanstddata)
+names <- names(df)
 names <- lapply(names, function(x) gsub("^f","frequency",x))
 names <- lapply(names, function(x) gsub("^t","time",x))
 names <- lapply(names, function(x) gsub("Body","body",x))
@@ -61,24 +62,32 @@ names <- lapply(names, function(x) gsub("Mag","magnitude",x))
 names <- lapply(names, function(x) gsub("Acc","acceleration",x))
 names <- lapply(names, function(x) gsub("Gravity","gravity",x))
 names <- lapply(names, function(x) gsub("\\(|\\)","",x))
- names <- lapply(names, function(x) gsub("\\-","",x))
-names(meanstddata) <- names
+names <- lapply(names, function(x) gsub("\\-","",x))
+names(df) <- names
 
 # Read the table that can conver activity number to a name string
 activitynames <- read.table("activity_labels.txt",header = FALSE)
 
 # For all the rows in the data set
-for (k in 1:nrow(meanstddata)) {
+for (k in 1:nrow(df)) {
  # Get the activity number
- actnum <- meanstddata[k,"activity"]
+ actnum <- df[k,"activity"]
  # Convert number to activity name
  actname <- activitynames[[2]][[actnum]]
  # Create a new column with activity names instead of numbers
- meanstddata[k,"activityname"] <- actname
+ df[k,"activityname"] <- actname
 }
 # Delete the activity column
-meanstddata[,"activity"] <- NULL
+df[,"activity"] <- NULL
 
-tidy.melted <- melt(meanstddata, id = c("subject", "activityname"))
+# Library reshape2 needed for melt/dcast functions
+library(reshape2)
+
+# Melt all data in tall thin columns except for subject/activity columns
+tidy.melted <- melt(df, id = c("subject", "activityname"))
+
+# Keep the subject/activity columns, expand the rest with only their means
 tidy <- dcast(tidy.melted, subject + activityname ~ variable  , mean)
-write.table(tidy,col.names = TRUE,file = "tidy.txt")
+
+# Write the tidy data set into the file "tidy.txt"
+write.table(tidy,col.names = TRUE,file = "tidy.txt",row.names = FALSE, quote = FALSE)
