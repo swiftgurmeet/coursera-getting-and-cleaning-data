@@ -12,7 +12,7 @@
 *   STANDING
 *   LAYING
 
-Rest of the fields are means of the set of data (features) collected from the original dataset for each subject and activity.
+Rest of the fields are means of a subset of data (features) collected from the original dataset for each subject and activity.
 
 ## Transformation of the original data
 
