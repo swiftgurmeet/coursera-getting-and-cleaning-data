@@ -1,6 +1,7 @@
 ## Code Book for the Course Project
 1. The field `subject` denotes the subject that performed an activity represented by a unique number. There are 30 in all.
 2. The second field `activity` denotes the activity performed by the subject. There are six types of activites here:
+
 * WALKING
 * WALKING_UPSTAIRS
 * WALKING_DOWNSTAIRS
