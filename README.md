@@ -26,7 +26,7 @@ The script `run_analysis.R` is then run on this data (original data) to generate
 
 The R script file `run_analysis.R` contains comments describing its functionality. 
 
-### Requirements to run `run_analysis.R`.
+### Requirements to run `run_analysis.R`
 
 *  The script must be run in the directory containg the files "features.txt", "features_info.txt" etc. i.e. the "UCI HAR Dataset" directory.
 *  The package `reshape2` is installed and usable
