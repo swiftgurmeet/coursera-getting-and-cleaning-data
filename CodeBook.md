@@ -9,7 +9,7 @@
 * STANDING
 * LAYING
 
-3. Rest of the fields are means of the set of data collected from the original dataset for each subject and activity. The original dataset and its description are found at:[UCI HAR Dataset](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions "UCI HAR Dataset")
+3. Rest of the fields are means of the set of data collected from the original dataset for each subject and activity. Only the fields containing `mean` or `std` in the name were retained. The column names correspond to the name of the original measurement feture, simplified by converting to lower case, removing dashes and brackets and changing the prefixes `t` and `f` to `time` and `frequency` respectively.  The original dataset and its description are found at:[UCI HAR Dataset](http://archive.ics.uci.edu/ml/datasets/Smartphone-Based+Recognition+of+Human+Activities+and+Postural+Transitions "UCI HAR Dataset")
 * timebodyaccmeanx
 * timebodyaccmeany
 * timebodyaccmeanz
