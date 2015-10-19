@@ -9,7 +9,7 @@
 ## Step 1 : Read the training and test data
 
 # Read the training feature set
-traindf <- read.table("train/X_train.txt",header = FALSE)
+traindata <- read.table("train/X_train.txt",header = FALSE)
 
 # Read the subject data. This is the people from whom the data was collected.
 # Each subject is represented by a unique number
@@ -22,72 +22,58 @@ trainsubject <- read.table("train/subject_train.txt",header = FALSE)
 trainlabel <- read.table("train/y_train.txt",header = FALSE)
 
 # Combine the feature set, subject and activity
-traindf <- cbind(traindf,trainsubject)
-traindf <- cbind(traindf,trainlabel)
+traindata <- cbind(traindata,trainsubject)
+traindata <- cbind(traindata,trainlabel)
 
 # Similarly, read and combine the data from the test directory
-testdf <- read.table("test/X_test.txt",header = FALSE)
+testdata <- read.table("test/X_test.txt",header = FALSE)
 testsubject <- read.table("test/subject_test.txt",header = FALSE)
 testlabel <- read.table("test/y_test.txt",header = FALSE)
-testdf <- cbind(testdf,testsubject)
-testdf <- cbind(testdf,testlabel)
+testdata <- cbind(testdata,testsubject)
+testdata <- cbind(testdata,testlabel)
 
 # Combine training and test data
-alldata <- rbind(traindf,testdf)
+alldata <- rbind(traindata,testdata)
 
-# Read the feature names
-allfeatures <- read.table("features.txt",header = FALSE, stringsAsFactors = FALSE)
+# Read the feature names from second column
+allfeatures <- read.table("features.txt",header = FALSE, stringsAsFactors = FALSE)[,2]
+
 # Add "subject" and "activity" to the feature names since we read in that data as well in the last
-# two columns.
-allfeatures <- rbind(allfeatures,data.frame(V1=(nrow(features)+1):(nrow(features) + 2),V2=c("subject","activity")))
+# two columns and name the columns in the data from the features names we collected
+allfeatures <- as.character(c(allfeatures,"subject","activity"))
 
-# Name the columns in the data from the features names we collected
-names(alldata) <- c(as.character(allfeatures$V2))
+colnames(alldata) <- allfeatures
 
-# Get the column indices fo all the features that have "mean" or "std" in their names
-features <- features[grep("mean.*\\(.*\\)|std.*\\(.*\\)|subject|activity", features$V2,ignore.case = TRUE), ]
+# Get the column indices for all the features that have "mean" or "std" in their names
+wantedfeatures <- allfeatures[grep("mean.*\\(.*\\)|std.*\\(.*\\)|subject|activity", allfeatures,ignore.case = TRUE) ]
 
 # Create new data set that only has the "mean" and "std" columns
-df <- alldata[,c(features$V1)]
+wanteddata <- alldata[,c(wantedfeatures)]
 
 # Make the column names more meaningful by expanding the parts.
-# The initial f is replaced by frequence, t by time and so on
-names <- names(df)
-names <- lapply(names, function(x) gsub("^f","frequency",x))
+# The initial f is replaced by frequence, t by time and so on.
+# () and - are removed 
+names <- names(wanteddata)
+names <- lapply(names, function(x) gsub("^f","freq",x))
 names <- lapply(names, function(x) gsub("^t","time",x))
-names <- lapply(names, function(x) gsub("Body","body",x))
-names <- lapply(names, function(x) gsub("Gyro","gyro",x))
-names <- lapply(names, function(x) gsub("Jerk","jerk",x))
-names <- lapply(names, function(x) gsub("Mag","magnitude",x))
-names <- lapply(names, function(x) gsub("Acc","acceleration",x))
-names <- lapply(names, function(x) gsub("Gravity","gravity",x))
-names <- lapply(names, function(x) gsub("\\(|\\)","",x))
-names <- lapply(names, function(x) gsub("\\-","",x))
-names(df) <- names
+names <- lapply(names, function(x) tolower(x))
+names <- lapply(names, function(x) gsub("[-()]", "",x))
+names(wanteddata) <- names
 
-# Read the table that can conver activity number to a name string
+# Read the table that can conver activity number to a name factor
 activitynames <- read.table("activity_labels.txt",header = FALSE)
 
-# For all the rows in the data set
-for (k in 1:nrow(df)) {
- # Get the activity number
- actnum <- df[k,"activity"]
- # Convert number to activity name
- actname <- activitynames[[2]][[actnum]]
- # Create a new column with activity names instead of numbers
- df[k,"activityname"] <- actname
-}
-# Delete the activity column
-df[,"activity"] <- NULL
+# Change activity numbers to name factors
+wanteddata[,"activity"] <- factor(wanteddata[,"activity"], levels=activitynames[,1], labels = activitynames[,2])
 
 # Library reshape2 needed for melt/dcast functions
 library(reshape2)
 
 # Melt all data in tall thin columns except for subject/activity columns
-tidy.melted <- melt(df, id = c("subject", "activityname"))
+tidy.melted <- melt(wanteddata, id = c("subject", "activity"))
 
 # Keep the subject/activity columns, expand the rest with only their means
-tidy <- dcast(tidy.melted, subject + activityname ~ variable  , mean)
+tidy <- dcast(tidy.melted, subject + activity ~ variable  , mean)
 
 # Write the tidy data set into the file "tidy.txt"
 write.table(tidy,col.names = TRUE,file = "tidy.txt",row.names = FALSE, quote = FALSE)
