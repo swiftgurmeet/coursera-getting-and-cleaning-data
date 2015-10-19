@@ -50,9 +50,8 @@ wantedfeatures <- allfeatures[grep("mean.*\\(.*\\)|std.*\\(.*\\)|subject|activit
 # Create new data set that only has the "mean" and "std" columns
 wanteddata <- alldata[,c(wantedfeatures)]
 
-# Make the column names more meaningful by expanding the parts.
-# The initial f is replaced by frequence, t by time and so on.
-# () and - are removed 
+# Change the column names to lowercase, the initial f is replaced by frequency, t 
+# by time and so on. The () and - are removed 
 names <- names(wanteddata)
 names <- lapply(names, function(x) gsub("^f","freq",x))
 names <- lapply(names, function(x) gsub("^t","time",x))
