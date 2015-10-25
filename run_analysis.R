@@ -1,3 +1,6 @@
+# Library reshape2 needed for melt/dcast functions
+library(reshape2)
+
 ## The data is in the classic form used for machine learning. The
 ## features set X is a matrixi sored in X_train.txt, the result is a 
 ## "label" in file y_train.txt which is a vector with length equal 
@@ -65,9 +68,6 @@ activitynames <- read.table("activity_labels.txt",header = FALSE)
 # Change activity numbers to name factors
 wanteddata[,"activity"] <- factor(wanteddata[,"activity"], levels=activitynames[,1], labels = activitynames[,2])
 
-# Library reshape2 needed for melt/dcast functions
-library(reshape2)
-
 # Melt all data in tall thin columns except for subject/activity columns
 tidy.melted <- melt(wanteddata, id = c("subject", "activity"))
 
@@ -76,3 +76,4 @@ tidy <- dcast(tidy.melted, subject + activity ~ variable  , mean)
 
 # Write the tidy data set into the file "tidy.txt"
 write.table(tidy,col.names = TRUE,file = "tidy.txt",row.names = FALSE, quote = FALSE)
+
